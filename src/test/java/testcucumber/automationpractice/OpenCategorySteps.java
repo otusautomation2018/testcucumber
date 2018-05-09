@@ -10,7 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.automationpractice.MainPage;
-import testcucumber.BaseSteps;
 import utils.Driver;
 import utils.PropertyReader;
 import utils.helpers.ActionsHelpers;

@@ -1,3 +1,4 @@
+@at
 Feature: Open category on site automationpractice
     
 Scenario: Open category
