@@ -1,5 +1,6 @@
 package utils.helpers;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -13,14 +14,14 @@ public class WaitingsHelpers {
 
     private static WebDriverWait webDriverWait;
 
-    public static WebDriverWait getInstanceWebDriverWait() {
+    public static WebDriverWait getInstanceWebDriverWait(WebDriver driver) {
         if (webDriverWait == null) {
-            webDriverWait = new WebDriverWait(Driver.getInstance(), baseTimeout);
+            webDriverWait = new WebDriverWait(driver, baseTimeout);
         }
         return webDriverWait;
     }
-    public static void waitForLoadPageByTextOnPage(WebElement expectedElement, String expectedText){
-        getInstanceWebDriverWait().until(
+    public static void waitForLoadPageByTextOnPage(WebDriver driver, WebElement expectedElement, String expectedText){
+        getInstanceWebDriverWait(driver).until(
                 ExpectedConditions.textToBePresentInElement(expectedElement, expectedText));
     }
 }

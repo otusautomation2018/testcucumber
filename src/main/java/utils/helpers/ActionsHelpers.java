@@ -1,29 +1,32 @@
 package utils.helpers;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utils.Driver;
 
 public class ActionsHelpers {
 
-    @Deprecated
-    private static final int PAUSE = 500;
+    private static Actions action;
+    private WebDriver driver;
 
-    private static Actions action = ActionsHelpers.getInstanceAction();
+    public ActionsHelpers(WebDriver driver) {
+        this.driver = driver;
+        this.action = getInstanceAction(driver);
+    }
 
-    public static Actions getInstanceAction() {
+    public static Actions getInstanceAction(WebDriver driver) {
         if( action == null) {
-            action = new Actions(Driver.getInstance());
+            action = new Actions(driver);
         }
         return action;
     }
 
-    public static void focusOnElement(WebElement focusElement, WebElement visibilityOfElement) {
-        action
+    public static void focusOnElement(WebDriver driver, WebElement focusElement, WebElement visibilityOfElement) {
+        getInstanceAction(driver)
                 .moveToElement(focusElement)
                 .build()
                 .perform();
-        WaitingsHelpers.getInstanceWebDriverWait().until(ExpectedConditions.visibilityOf(visibilityOfElement));
+        WaitingsHelpers.getInstanceWebDriverWait(driver).until(ExpectedConditions.visibilityOf(visibilityOfElement));
     }
 }

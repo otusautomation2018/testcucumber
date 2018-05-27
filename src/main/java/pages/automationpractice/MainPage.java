@@ -1,5 +1,6 @@
 package pages.automationpractice;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import pages.BasePage;
@@ -15,9 +16,9 @@ public class MainPage extends BasePage {
 
     public TopMenuBlock topMenuBlock;
 
-    public MainPage() {
-        super();
-        topMenuBlock = new TopMenuBlock();
+    public MainPage(WebDriver driver) {
+        super(driver);
+        topMenuBlock = new TopMenuBlock(driver);
     }
 
     private String url = baseUrl + "/index.php";

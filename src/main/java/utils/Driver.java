@@ -6,64 +6,74 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Driver {
 
     public static String driverName;
     private static WebDriver driver;
-    private static final boolean DISPLAY = Boolean.valueOf(System.getProperty("display"));
+    private static final String PATH_TO_PROPERTIES = "properties/settings.properties";
 
     public static WebDriver createFireFoxDriver() {
         WebDriverManager.firefoxdriver().setup();
-        driver = new FirefoxDriver();
-        return driver;
+        return new FirefoxDriver();
     }
 
     public static WebDriver createOperaDriver() {
         WebDriverManager.operadriver().setup();
-        driver = new OperaDriver();
-        return driver;
+        return new OperaDriver();
     }
 
     public static WebDriver createChromeDriver() {
         WebDriverManager.chromedriver().setup();
-        if(DISPLAY) {
-            driver = new ChromeDriver();
-            return driver;
-        } else {
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless");
-            driver = new ChromeDriver(options);
-            return driver;
+        return new ChromeDriver();
+    }
+
+    public static WebDriver createHeadlessChromeDriver() {
+        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        return new ChromeDriver(options);
+    }
+
+    public static WebDriver createRemoteChromeDriver() {
+        String urlRemoteDriver = PropertyReader.getPropertyFromFile(PATH_TO_PROPERTIES, "url.remote.driver");
+        WebDriverManager.chromedriver().setup();
+        try {
+            driver = new RemoteWebDriver(new URL(urlRemoteDriver), DesiredCapabilities.chrome());
+            driver.manage().window().maximize();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+        return driver;
     }
 
-    public static WebDriver createSafariDriver() {
-        return new SafariDriver();
-    }
-
-    private static WebDriver getDriver() {
+    public static WebDriver getDriver() {
         driverName = System.getProperty("browser");
         if(driverName == null) {
-            driverName = PropertyReader.
-                    getPropertyFromFile(
-                            "properties/settings.properties",
-                            "browser");
+            driverName = PropertyReader.getPropertyFromFile(PATH_TO_PROPERTIES, "browser");
         }
-        if (driverName == null) driverName = "chrome";
         switch (driverName){
-            case "chrome": return createChromeDriver();
-            case "firefox": return createFireFoxDriver();
-            case "opera": return createOperaDriver();
-            case "safari": return createSafariDriver();
-            default: return createChromeDriver();
-        }
-    }
-
-    public static WebDriver getInstance() {
-        if (driver == null) {
-            driver = Driver.getDriver();
+            case "chrome":
+                driver =  createChromeDriver();
+                break;
+            case "chrome-headless":
+                driver =  createHeadlessChromeDriver();
+                break;
+            case "chrome-remote":
+                driver =  createRemoteChromeDriver();
+                break;
+            case "firefox":
+                driver =  createFireFoxDriver();
+                break;
+            case "opera":
+                driver =  createOperaDriver();
+                break;
+            default: driver =  createChromeDriver();
         }
         return driver;
     }
