@@ -1,7 +1,5 @@
 package testcucumber.automationpractice;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -28,33 +26,30 @@ public class OpenCategorySteps {
     protected WebDriver driver;
     protected WebDriverWait webDriverWait;
 
-    @Before
     public void prepare(){
-        driver = Driver.getInstance();
+        driver = Driver.getDriver();
         driver.manage().timeouts().implicitlyWait(baseTimeout, TimeUnit.SECONDS);
-        webDriverWait = WaitingsHelpers.getInstanceWebDriverWait();
+        webDriverWait = WaitingsHelpers.getInstanceWebDriverWait(driver);
     }
 
-    @After
-    public void quit() {
-        driver.quit();
-    }
-
-    private  MainPage mainPage;
-    private final String tShirtsPageTitle = "T-shirts - My Store";
+    private MainPage mainPage;
+    private final String T_SHIRTS_PAGE_TITLE = "T-shirts - My Store";
 
     @Given("^I am on the Automationpractice Main page$")
     public void i_am_on_the_automationpractice_main_page() {
-        mainPage = new MainPage();
+        prepare();
+        mainPage = new MainPage(driver);
         driver.get(mainPage.baseUrl);
-        WaitingsHelpers.waitForLoadPageByTextOnPage(mainPage.h1OfexpectedText, mainPage.expectedTextOnPage());
-        assertEquals(driver.getCurrentUrl(), mainPage.getUrl());
-        assertTrue(mainPage.isInitialized());
+        WaitingsHelpers.waitForLoadPageByTextOnPage(driver, mainPage.h1OfexpectedText, mainPage.expectedTextOnPage());
+        assertTrue("Current Url not equals expected Url.", driver.getCurrentUrl().contains(mainPage.getUrl()));
+        assertTrue(mainPage.getClass() + " is not initialized. ", mainPage.isInitialized());
+
+
     }
 
     @When("^I focus on Women category$")
     public void i_focus_on_women_category() {
-        ActionsHelpers.focusOnElement(mainPage.topMenuBlock.firstCategory, mainPage.topMenuBlock.subMenu);
+        ActionsHelpers.focusOnElement(driver, mainPage.topMenuBlock.firstCategory, mainPage.topMenuBlock.subMenu);
     }
 
     @And("^I click T-shirts link$")
@@ -64,7 +59,12 @@ public class OpenCategorySteps {
 
     @Then("^I see T-shirts page$")
     public void i_see_t_shirts_page() {
-        webDriverWait.until(ExpectedConditions.titleIs(tShirtsPageTitle));
-        assertEquals(driver.getTitle(), tShirtsPageTitle);
+        webDriverWait.until(ExpectedConditions.titleIs(T_SHIRTS_PAGE_TITLE));
+        assertEquals("TShirts Page title is not displayed.",driver.getTitle(), T_SHIRTS_PAGE_TITLE);
+        quit();
+    }
+
+    public void quit() {
+        driver.quit();
     }
 }

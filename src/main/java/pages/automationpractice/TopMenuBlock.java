@@ -1,5 +1,6 @@
 package pages.automationpractice;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import pages.BasePage;
@@ -14,4 +15,8 @@ public class TopMenuBlock extends BasePage {
 
     @FindBy(xpath = "//a[@title='T-shirts']")
     public WebElement tShirtsBtn;
+
+    public TopMenuBlock(WebDriver driver){
+        super(driver);
+    }
 }
